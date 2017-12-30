@@ -1,4 +1,4 @@
-package cn.carl.hadoop.mr;
+package cn.carl.hadoop.wrapper;
 
 import cn.carl.aop.javassist.AssistTools;
 import cn.carl.hadoop.AbstractClassMaker;

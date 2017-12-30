@@ -1,4 +1,4 @@
-package cn.carl.hadoop.mr;
+package cn.carl.hadoop.wrapper;
 
 import org.apache.hadoop.mapreduce.Counter;
 

@@ -1,6 +1,6 @@
 package cn.carl.hadoop.config;
 
-import cn.carl.hadoop.mr.FileSplitWrapper;
+import cn.carl.hadoop.wrapper.FileSplitWrapper;
 import cn.carl.hadoop.mr.WriteStrategy;
 import cn.carl.hadoop.run.RunnerParam;
 

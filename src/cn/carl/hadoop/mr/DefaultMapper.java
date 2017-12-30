@@ -1,5 +1,6 @@
 package cn.carl.hadoop.mr;
 
+import cn.carl.hadoop.wrapper.FileSplitWrapper;
 import cn.carl.other.Assert;
 import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.InputSplit;
@@ -29,7 +30,7 @@ public class DefaultMapper extends DefaultMapperWrapper {
      *
      * @return
      */
-    public Mapper.Context getContext(WriteStrategy writeStrategy, FileSplitWrapper fileSplitWrapper) {
+    public Mapper.Context getContext(WriteStrategy writeStrategy, cn.carl.hadoop.wrapper.FileSplitWrapper fileSplitWrapper) {
         Assert.assertNotNull(writeStrategy);
         return new DefaultMapperContext(writeStrategy, fileSplitWrapper);
     }
@@ -44,7 +45,7 @@ public class DefaultMapper extends DefaultMapperWrapper {
         /**
          * 当前定义的切分数据的原始文件名称
          */
-        private final FileSplitWrapper fileSplitWrapper;
+        private final cn.carl.hadoop.wrapper.FileSplitWrapper fileSplitWrapper;
 
         /**
          * 构造一个处理write方法的策略对象

@@ -56,7 +56,7 @@ public class ReducerRunner extends AbstractRunner {
     /**
      * 当前数据的映射对象
      */
-    private final Map<Integer, Map> dataMap = new HashMap<>();
+    protected final Map<Integer, Map> dataMap = new HashMap<>();
 
 
     public ReducerRunner(Class<?> mrClass, ContextConfig contextConfig) {
@@ -318,9 +318,9 @@ public class ReducerRunner extends AbstractRunner {
      *
      * @param data  真实的输入数据
      * @param clazz 指定的类型
-     * @return
+     * @return 当前的键值对象
      */
-    private Object getKeyValue(String data, Class<?> clazz) {
+    protected Object getKeyValue(String data, Class<?> clazz) {
 
         //指定的方法名称
         String setMethodName = "set";
@@ -350,11 +350,13 @@ public class ReducerRunner extends AbstractRunner {
     /**
      * 将对应的数据进行路由
      *
-     * @param key   指定的key的数据
-     * @param value 指定的Value的数据
+     * @param key                指定的key的数据
+     * @param value              指定的Value的数据
+     * @param partition          当前分区数据的对象
+     * @param writableComparator 当前比较器的对象
      */
-    private void dataRoute(Object key, Object value, Partitioner partition,
-                           WritableComparator writableComparator) {
+    protected void dataRoute(Object key, Object value, Partitioner partition,
+                             WritableComparator writableComparator) {
 
         Integer realPartition = partition.getPartition(key, value, this.reducerParam.getPartition());
 

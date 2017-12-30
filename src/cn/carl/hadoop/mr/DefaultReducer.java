@@ -7,7 +7,6 @@ import org.apache.hadoop.mapreduce.Reducer;
 import java.io.IOException;
 
 /**
- *
  * <p>Title: cn.carl.hadoop.mr DefaultReducer</p>
  * <p>Description: </p>
  * <p>Company: </p>
@@ -18,20 +17,22 @@ import java.io.IOException;
  */
 public class DefaultReducer extends DefaultReducerWrapper {
 
-    static class InnerReduer{
+    static class InnerReduer {
         private static final DefaultReducer CONTEXT = new DefaultReducer();
     }
 
     /**
      * 获取单例模式
+     *
      * @return
      */
-    public static DefaultReducer getInstance(){
+    public static DefaultReducer getInstance() {
         return InnerReduer.CONTEXT;
     }
 
     /**
      * 获取Reducer类的上下文对象
+     *
      * @param writeStrategy
      * @return
      */
@@ -40,9 +41,11 @@ public class DefaultReducer extends DefaultReducerWrapper {
         return new DefaultReducerContext(writeStrategy);
     }
 
-    class DefaultReducerContext extends DefaultReducerWrapper.ReducerContextWrapper implements WriteStrategyHolder{
+    class DefaultReducerContext extends DefaultReducerWrapper.ReducerContextWrapper implements WriteStrategyHolder {
 
-        /** 写的方式的策略 */
+        /**
+         * 写的方式的策略
+         */
         private final WriteStrategy writeStrategy;
 
         public DefaultReducerContext(WriteStrategy writeStrategy) {
