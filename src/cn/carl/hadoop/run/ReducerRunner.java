@@ -382,7 +382,7 @@ public class ReducerRunner extends AbstractRunner {
      */
     private static class TreeMapList<K, V> extends TreeMap<K, List<V>> {
 
-        public TreeMapList(Comparator<? super K> comparator) {
+        TreeMapList(Comparator<? super K> comparator) {
             super(comparator);
         }
 
@@ -392,7 +392,7 @@ public class ReducerRunner extends AbstractRunner {
          * @param key   当前的Key数据
          * @param value 当前的Value数据
          */
-        public void putKeyValue(K key, V value) {
+        void putKeyValue(K key, V value) {
 
             //如果当前数据取包含了当前的键的数据,取出集合,将值加进去
             if (this.containsKey(key)) {

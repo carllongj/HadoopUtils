@@ -3,6 +3,7 @@ package cn.carl.hadoop.config;
 import cn.carl.hadoop.wrapper.FileSplitWrapper;
 import cn.carl.hadoop.mr.WriteStrategy;
 import cn.carl.hadoop.run.RunnerParam;
+import org.apache.hadoop.conf.Configuration;
 
 import java.lang.reflect.Type;
 
@@ -16,7 +17,7 @@ import java.lang.reflect.Type;
  * @date 2017/12/27 18:03
  * @Version 1.0
  */
-public abstract class AbstractConfiguration implements ContextConfig {
+abstract class AbstractConfiguration implements ContextConfig {
 
     /**
      * 当前的输入数据路径集合
@@ -44,16 +45,36 @@ public abstract class AbstractConfiguration implements ContextConfig {
     protected final Type[] types;
 
     /**
+     * 当前的配置文件数据路径
+     */
+    protected String[] configPath;
+
+    /**
+     * 获取当前的配置对象
+     */
+    protected Configuration configuration;
+
+    /**
+     * 获取当前的任务输出路径
+     */
+    protected String outputPath;
+
+    /**
      * 保存当前输入数据的路径
      *
      * @param inputPath
      */
-    protected AbstractConfiguration(String[] inputPath, RunnerParam runnerParam, Type[] types) {
+    protected AbstractConfiguration(String[] inputPath, String outputPath,
+                                    RunnerParam runnerParam, Type[] types) {
         if (null == runnerParam) {
             runnerParam = new RunnerParam();
         }
 
         this.inputPath = inputPath;
+
+        //获取输出数据路径
+        this.outputPath = outputPath;
+
         this.runnerParam = runnerParam;
 
         //初始化的当前的数据,定义当前的FileSplit对象
@@ -91,5 +112,35 @@ public abstract class AbstractConfiguration implements ContextConfig {
     @Override
     public Type[] getGenericParameters() {
         return this.types;
+    }
+
+    /**
+     * 获取当前的配置文件路径
+     *
+     * @return 当前的配置文件路径
+     */
+    @Override
+    public String[] getConfigurationPath() {
+        return this.configPath;
+    }
+
+    /**
+     * 获取当前任务的输出数据路径
+     *
+     * @return 任务的输出数据路径
+     */
+    @Override
+    public String getOutputPath() {
+        return this.outputPath;
+    }
+
+    /**
+     * 获取当前的配置对象
+     *
+     * @return 当前的配置对象
+     */
+    @Override
+    public Configuration getConfiguration() {
+        return this.configuration;
     }
 }

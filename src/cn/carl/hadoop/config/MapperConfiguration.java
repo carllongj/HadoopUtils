@@ -4,6 +4,7 @@ import cn.carl.hadoop.mr.DefaultMapper;
 import cn.carl.hadoop.mr.FileWrite;
 import cn.carl.hadoop.mr.WriteStrategy;
 import cn.carl.hadoop.run.RunnerParam;
+import cn.carl.hadoop.wrapper.ConfigurationWrapper;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.TaskInputOutputContext;
 
@@ -23,17 +24,21 @@ public class MapperConfiguration extends AbstractConfiguration {
     /**
      * 缓存当前的运行任务的上下文对象
      */
-    private final Mapper.Context MAPPERCONTEXT;
+    private final Mapper.Context mapperContext;
 
     /**
      * 指定输入数据路径,获取当前Mapper任务运行的上下文对象
      *
-     * @param inputPath 输入数据的路径
-     * @return writeStrategy 当前任务运行的上下文对象
+     * @param inputPath     输入数据的路径
+     * @param outputPath    输出数据的路径
+     * @param writeStrategy 写出数据的方式
+     * @param runnerParam   任务运行的参数
+     * @param types         泛型参数的集合
      */
-    public MapperConfiguration(String[] inputPath, WriteStrategy writeStrategy,
+    public MapperConfiguration(String[] inputPath, String outputPath,
+                               WriteStrategy writeStrategy,
                                RunnerParam runnerParam, Type[] types) {
-        super(inputPath, runnerParam, types);
+        super(inputPath, outputPath, runnerParam, types);
 
         if (null == writeStrategy) {
             writeStrategy = new FileWrite();
@@ -43,16 +48,25 @@ public class MapperConfiguration extends AbstractConfiguration {
         this.writeStrategy = writeStrategy;
 
         //保存当前上下文对象
-        this.MAPPERCONTEXT = new DefaultMapper().getContext(writeStrategy, this.fileSplitWrapper);
+        this.mapperContext = new DefaultMapper().getContext(this);
+
+        //添加配置文件路径
+        this.configPath = runnerParam.getConfigPaths();
+
+        this.configuration = new ConfigurationWrapper(this.configPath);
     }
 
     /**
      * 通过输入路径构造一个当前运行的上下文对象
      *
-     * @param inputPath 数据输入路径
+     * @param inputPath   数据输入路径
+     * @param outputPath  数据输出数据路径
+     * @param runnerParam 运行的参数集合
+     * @param types       当前的泛型参数集合
      */
-    public MapperConfiguration(String[] inputPath, RunnerParam runnerParam, Type[] types) {
-        this(inputPath, null, runnerParam, types);
+    public MapperConfiguration(String[] inputPath, String outputPath,
+                               RunnerParam runnerParam, Type[] types) {
+        this(inputPath, outputPath, null, runnerParam, types);
     }
 
     /**
@@ -62,7 +76,7 @@ public class MapperConfiguration extends AbstractConfiguration {
      */
     @Override
     public TaskInputOutputContext getContext() {
-        return MAPPERCONTEXT;
+        return mapperContext;
     }
 
     /**

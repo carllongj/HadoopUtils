@@ -1,4 +1,4 @@
-package cn.carl.hadoop;
+package cn.carl.hadoop.wrapper;
 
 import javassist.CtClass;
 
@@ -33,4 +33,11 @@ public interface ClassMaker {
      * @return 当前的修改字节码后的对象
      */
     Object getWrapperInstance();
+
+    /**
+     * 获取当前类的全限定名称
+     *
+     * @return 当前类包装对象的全限定名称
+     */
+    String getClassName();
 }

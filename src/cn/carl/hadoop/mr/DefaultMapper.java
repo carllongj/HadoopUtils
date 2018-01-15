@@ -1,7 +1,9 @@
 package cn.carl.hadoop.mr;
 
+import cn.carl.hadoop.config.ContextConfig;
 import cn.carl.hadoop.wrapper.FileSplitWrapper;
 import cn.carl.other.Assert;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -30,31 +32,25 @@ public class DefaultMapper extends DefaultMapperWrapper {
      *
      * @return
      */
-    public Mapper.Context getContext(WriteStrategy writeStrategy, cn.carl.hadoop.wrapper.FileSplitWrapper fileSplitWrapper) {
-        Assert.assertNotNull(writeStrategy);
-        return new DefaultMapperContext(writeStrategy, fileSplitWrapper);
+    public Mapper.Context getContext(ContextConfig contextConfig) {
+        Assert.assertNotNull(contextConfig);
+
+        //所有的配置在该对象中
+
+        return new DefaultMapperContext(contextConfig);
     }
 
     class DefaultMapperContext extends DefaultMapperWrapper.MapperWrapperContext implements WriteStrategyHolder {
 
-        /**
-         * 保留策略处理mr的write方法
-         */
-        private final WriteStrategy writeStrategy;
-
-        /**
-         * 当前定义的切分数据的原始文件名称
-         */
-        private final cn.carl.hadoop.wrapper.FileSplitWrapper fileSplitWrapper;
+        private final ContextConfig contextConfig;
 
         /**
          * 构造一个处理write方法的策略对象
          *
-         * @param writeStrategy
+         * @param
          */
-        public DefaultMapperContext(WriteStrategy writeStrategy, FileSplitWrapper fileSplitWrapper) {
-            this.writeStrategy = writeStrategy;
-            this.fileSplitWrapper = fileSplitWrapper;
+        public DefaultMapperContext(ContextConfig contextConfig) {
+            this.contextConfig = contextConfig;
         }
 
         @Override
@@ -64,6 +60,10 @@ public class DefaultMapper extends DefaultMapperWrapper {
 
         @Override
         public void write(Object o, Object o2) throws IOException, InterruptedException {
+
+            //获取该配置的数据写出方式
+            WriteStrategy writeStrategy = this.contextConfig.getWriteStrategy();
+
             if (null != writeStrategy) {
                 writeStrategy.write(o, o2);
             } else {
@@ -73,12 +73,28 @@ public class DefaultMapper extends DefaultMapperWrapper {
 
         @Override
         public WriteStrategy getWriteStrategy() {
-            return writeStrategy;
+            return this.contextConfig.getWriteStrategy();
         }
 
+        /**
+         * 获取输入数据的路径
+         *
+         * @return 输入数据的路径
+         */
         @Override
         public InputSplit getInputSplit() {
-            return (InputSplit) this.fileSplitWrapper.getWrapperInstance();
+            return (InputSplit) this.contextConfig.getFileSplitWrapper().
+                    getWrapperInstance();
+        }
+
+        /**
+         * 获取当前的配置对象
+         *
+         * @return 获取任务运行的配置对象
+         */
+        @Override
+        public Configuration getConfiguration() {
+            return this.contextConfig.getConfiguration();
         }
     }
 }

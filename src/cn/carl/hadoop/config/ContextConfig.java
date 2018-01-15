@@ -3,6 +3,7 @@ package cn.carl.hadoop.config;
 import cn.carl.hadoop.wrapper.FileSplitWrapper;
 import cn.carl.hadoop.mr.WriteStrategy;
 import cn.carl.hadoop.run.RunnerParam;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.TaskInputOutputContext;
 
 import java.lang.reflect.Type;
@@ -60,4 +61,25 @@ public interface ContextConfig {
      * @return 泛型参数类型数组
      */
     Type[] getGenericParameters();
+
+    /**
+     * 获取当前的mr运行的配置文件路径集合
+     *
+     * @return 当前的配置文件集合
+     */
+    String[] getConfigurationPath();
+
+    /**
+     * 获取当前的配置对象
+     *
+     * @return 当前的配置对象
+     */
+    Configuration getConfiguration();
+
+    /**
+     * 获取当前任务的输出路径
+     *
+     * @return 任务的数据路径
+     */
+    String getOutputPath();
 }

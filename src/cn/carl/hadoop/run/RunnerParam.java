@@ -1,5 +1,7 @@
 package cn.carl.hadoop.run;
 
+import java.util.Arrays;
+
 /**
  * 保存一些启动任务的常量参数
  * <p>Title: cn.carl.hadoop.run RunnerParam</p>
@@ -31,6 +33,11 @@ public class RunnerParam {
      * 设置当前调用回调方法的名称
      */
     protected String callback;
+
+    /**
+     * 设置当前的配置文件数据路径集合
+     */
+    protected String[] configPaths;
 
     public boolean isExecuteSetup() {
         return executeSetup;
@@ -64,6 +71,15 @@ public class RunnerParam {
         this.callback = callback;
     }
 
+    public String[] getConfigPaths() {
+        return configPaths;
+    }
+
+    public void setConfigPaths(String[] configPaths) {
+        this.configPaths = configPaths;
+    }
+
+
     /**
      * 默认构造器,没有初始化方法,回调,也不设置当前的setup和
      * cleanup方法
@@ -91,25 +107,19 @@ public class RunnerParam {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
         RunnerParam that = (RunnerParam) o;
 
-        if (executeSetup != that.executeSetup) {
+        if (executeSetup != that.executeSetup) return false;
+        if (executeCleanup != that.executeCleanup) return false;
+        if (initMethod != null ? !initMethod.equals(that.initMethod) : that.initMethod != null)
             return false;
-        }
-        if (executeCleanup != that.executeCleanup) {
+        if (callback != null ? !callback.equals(that.callback) : that.callback != null)
             return false;
-        }
-        if (initMethod != null ? !initMethod.equals(that.initMethod) : that.initMethod != null) {
-            return false;
-        }
-        return callback != null ? callback.equals(that.callback) : that.callback == null;
+        // Probably incorrect - comparing Object[] arrays with Arrays.equals
+        return Arrays.equals(configPaths, that.configPaths);
 
     }
 
@@ -119,6 +129,7 @@ public class RunnerParam {
         result = 31 * result + (executeCleanup ? 1 : 0);
         result = 31 * result + (initMethod != null ? initMethod.hashCode() : 0);
         result = 31 * result + (callback != null ? callback.hashCode() : 0);
+        result = 31 * result + Arrays.hashCode(configPaths);
         return result;
     }
 }

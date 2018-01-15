@@ -1,7 +1,6 @@
 package cn.carl.hadoop.wrapper;
 
 import cn.carl.aop.javassist.AssistTools;
-import cn.carl.hadoop.AbstractClassMaker;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtField;
@@ -20,7 +19,7 @@ import java.lang.reflect.Constructor;
  * @date 2017/12/26 21:21
  * @Version 1.0
  */
-public class FileSplitWrapper extends AbstractClassMaker {
+public class FileSplitWrapper implements ClassMaker {
 
     /**
      * 日志对象
@@ -196,6 +195,11 @@ public class FileSplitWrapper extends AbstractClassMaker {
     @Override
     public Object getWrapperInstance() {
         return this.splitInstance;
+    }
+
+    @Override
+    public String getClassName() {
+        return HADOOP_FILE_SPLIT_CLASS;
     }
 
     /**

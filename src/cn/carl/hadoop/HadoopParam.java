@@ -42,6 +42,11 @@ public interface HadoopParam {
     String HADOOP_LONGWRITABLE_CLASS = "org.apache.hadoop.io.LongWritable";
 
     /**
+     * 多路径输出数据对象的全限定名称
+     */
+    String MULTIPLE_OUTPUTS = "org.apache.hadoop.mapreduce.lib.output.MultipleOutputs";
+
+    /**
      * 定义产生子类的全限定名称的前几个包
      */
     String SUB_CLASS_NAME = "com.carl.hadoop.provider.";

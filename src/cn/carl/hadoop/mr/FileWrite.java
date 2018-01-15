@@ -76,7 +76,7 @@ public class FileWrite implements WriteStrategy {
         this.path = path;
 
         if (createFile) {
-            load();
+            this.load();
         }
         this.loaded = createFile;
     }

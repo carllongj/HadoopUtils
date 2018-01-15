@@ -1,10 +1,16 @@
 package cn.carl.hadoop.run;
 
+import cn.carl.hadoop.HadoopParam;
 import cn.carl.hadoop.config.ContextConfig;
 import cn.carl.hadoop.config.HadoopType;
+import cn.carl.hadoop.wrapper.DefaultCounterWrapper;
+import cn.carl.hadoop.wrapper.MultipleOutputsWrapper;
 import cn.carl.other.Assert;
+import cn.carl.reflect.ReflectUtils;
+import org.apache.hadoop.yarn.webapp.hamlet.HamletSpec;
 import org.apache.log4j.Logger;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
@@ -135,6 +141,82 @@ public abstract class AbstractRunner implements HadoopRunner {
         } catch (ReflectiveOperationException e) {
             LOGGER.error("can not create instance of mrClass " + mrClass.getName());
             throw new RuntimeException(e.getMessage());
+        }
+
+        //获取该类实例中有没有对应的MultipleOutputs对象,作为多路径输出
+        checkOutputs(mrClass, mrInstance);
+
+    }
+
+    /**
+     * 通过指定的Class对象找出该类是否有对应的输出属性
+     *
+     * @param clazz      对应的Class对象
+     * @param mrInstance 当前的mr对象实例
+     */
+    private void checkOutputs(Class<?> clazz, Object mrInstance) {
+
+        //获取所有的属性
+        Field[] fields = clazz.getDeclaredFields();
+
+        //声明一个变量看当前的属性不可访问
+        boolean notAccessible;
+
+        //遍历所有属性
+        for (int i = 0; i < fields.length; i++) {
+
+            Field current = fields[i];
+
+
+            if (!current.isAccessible()) {
+                notAccessible = true;
+
+                //设置访问权限
+                current.setAccessible(true);
+            } else {
+
+                //否则可以访问就不设置
+                notAccessible = false;
+            }
+
+
+            //获取当前类的类型
+            Class<?> currentDeclaringClass = current.getDeclaringClass();
+
+            //声明一个类的类型接受真实类型
+            Class<?> realClass;
+
+            try {
+
+                //加载当前的Class对象
+                realClass = Class.forName(HadoopParam.MULTIPLE_OUTPUTS, false,
+                        Thread.currentThread().getContextClassLoader());
+            } catch (ClassNotFoundException e) {
+                //不能找到指定的Class对象
+
+                LOGGER.error("can not find class " + HadoopParam.MULTIPLE_OUTPUTS);
+                throw new RuntimeException("can not find class " + HadoopParam.MULTIPLE_OUTPUTS);
+            }
+
+            //当前的类对象是其子类,则重新初始化该对象
+            if (ReflectUtils.isSubClass(currentDeclaringClass, realClass)) {
+
+                //创建对应的多文件路径输出对象
+                MultipleOutputsWrapper multiple = new MultipleOutputsWrapper(this.contextConfig);
+
+                try {
+
+                    //多路径输出文件数据
+                    current.set(mrInstance, multiple);
+                } catch (IllegalAccessException e) {
+                    //ignore,not happen
+                }
+            }
+
+            //设置当前的访问权限
+            if (notAccessible) {
+                current.setAccessible(false);
+            }
         }
     }
 }

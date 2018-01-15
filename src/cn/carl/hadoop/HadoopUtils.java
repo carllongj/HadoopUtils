@@ -1,10 +1,10 @@
-package cn.carl.hadoop.mr;
+package cn.carl.hadoop;
 
-import cn.carl.hadoop.HadoopParam;
-import cn.carl.hadoop.MRConfig;
 import cn.carl.hadoop.config.ContextConfig;
 import cn.carl.hadoop.config.MapperConfiguration;
 import cn.carl.hadoop.config.ReducerConfiguration;
+import cn.carl.hadoop.mr.FileWrite;
+import cn.carl.hadoop.mr.WriteStrategy;
 import cn.carl.hadoop.run.AbstractRunner;
 import cn.carl.hadoop.run.HadoopRunner;
 import cn.carl.hadoop.run.ReducerParam;
@@ -183,7 +183,8 @@ public class HadoopUtils {
             LOGGER.info("build " + HadoopParam.HADOOP_MAPPER_CLASS_NAME + " ContextConfig");
 
             //当前写的策略为空,则默认使用文件写出
-            contextConfig = new MapperConfiguration(inputPaths, writeStrategy, runnerParam, types);
+            contextConfig = new MapperConfiguration(inputPaths, outPath,
+                    writeStrategy, runnerParam, types);
 
 
         } else if (ReflectUtils.isSubClass(mrClass, Reducer.class)) {
@@ -196,7 +197,8 @@ public class HadoopUtils {
             //当前类是Reducer的子类
 
             //保存当前的运行时任务配置数据
-            contextConfig = new ReducerConfiguration(inputPaths, writeStrategy, runnerParam, types);
+            contextConfig = new ReducerConfiguration(inputPaths, outPath,
+                    writeStrategy, runnerParam, types);
 
         } else {
             LOGGER.error("不能执行的类,其不是Mapper或者Reducer的子类 : " + mrClass.getName());

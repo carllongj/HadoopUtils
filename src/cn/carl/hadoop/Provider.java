@@ -1,8 +1,7 @@
-package cn.carl.hadoop.mr;
+package cn.carl.hadoop;
 
 import cn.carl.aop.javassist.AssistTools;
-import cn.carl.hadoop.HadoopParam;
-import cn.carl.hadoop.MRConfig;
+import cn.carl.hadoop.mr.WriteStrategy;
 import cn.carl.reflect.ReflectUtils;
 import javassist.*;
 import org.apache.log4j.Logger;
@@ -19,7 +18,7 @@ import java.lang.reflect.Type;
  * @date 2017/11/2 21:26
  * @Version 1.0
  */
-public class Provider {
+class Provider {
 
     /**
      * 日志对象
@@ -43,7 +42,7 @@ public class Provider {
      * 3    -> 上下文的具体类型
      * 5    -> 方法名称
      */
-    private static final String[] METHODBODY = new String[]{"public void ", "",
+    private static final String[] METHOD_BODY = new String[]{"public void ", "",
             "(", "", " context ){super.", "", "(context);}"};
 
     /**
@@ -163,11 +162,11 @@ public class Provider {
             body = getMapBody(types[1]);
 
             //添加setup方法到类结构上
-            addMethodByArray(ctClass, METHODBODY, HadoopParam.SETUP_METHOD,
+            addMethodByArray(ctClass, METHOD_BODY, HadoopParam.SETUP_METHOD,
                     HadoopParam.HADOOP_MAPPER_CONTEXT_CLASS_NAME);
 
             //添加cleanup到类结构上
-            addMethodByArray(ctClass, METHODBODY, HadoopParam.CLEANUP_METHOD,
+            addMethodByArray(ctClass, METHOD_BODY, HadoopParam.CLEANUP_METHOD,
                     HadoopParam.HADOOP_MAPPER_CONTEXT_CLASS_NAME);
 
         } else if (ReflectUtils.isSubClass(clazz, HADOOP_REDUCER_CLASS)) {
@@ -175,11 +174,11 @@ public class Provider {
             body = getReduceBody(types[1]);
 
             //添加setup方法到类结构上
-            addMethodByArray(ctClass, METHODBODY, HadoopParam.SETUP_METHOD,
+            addMethodByArray(ctClass, METHOD_BODY, HadoopParam.SETUP_METHOD,
                     HadoopParam.HADOOP_REDUCER_CONTEXT_CLASS_NAME);
 
             //添加cleanup到类结构上
-            addMethodByArray(ctClass, METHODBODY, HadoopParam.CLEANUP_METHOD,
+            addMethodByArray(ctClass, METHOD_BODY, HadoopParam.CLEANUP_METHOD,
                     HadoopParam.HADOOP_REDUCER_CONTEXT_CLASS_NAME);
 
         }
@@ -206,7 +205,9 @@ public class Provider {
         CtClass ctClass = createCtClass(clazz, writeStrategy, partition);
 
         Class<?> realClass = null;
+
         try {
+
             //转换成Class对象返回
             realClass = ctClass.toClass();
         } catch (CannotCompileException e) {

@@ -24,6 +24,13 @@ public class ConfigurationWrapper extends Configuration {
      */
     private static final Logger LOGGER = Logger.getLogger(ConfigurationWrapper.class);
 
+    /**
+     * 通过文件夹来创建一个输入配置文件的路径
+     * <p>
+     * 一个文件输入路径的构造器,通过这个文件路径,寻找其路径下的所有xml配置文件
+     *
+     * @param path 一个文件夹路径
+     */
     public ConfigurationWrapper(String path) {
 
         super();
@@ -36,7 +43,7 @@ public class ConfigurationWrapper extends Configuration {
 
             //获取该目录下的所有文件
             File[] files = file.listFiles();
-            if (files.length > 0) {
+            if (null != files && files.length > 0) {
 
                 //遍历当前目录下的所有文件
                 for (File realFile : files) {
@@ -61,20 +68,31 @@ public class ConfigurationWrapper extends Configuration {
         }
     }
 
+    /**
+     * 通过指定数组路径来创建对应的对象
+     *
+     * @param paths 输入数据对象
+     */
     public ConfigurationWrapper(String[] paths) {
-        
-        if (null == paths) {
-            throw new RuntimeException("input path can not be null");
-        }
 
-        for (String path : paths) {
-            RealResource realResource = ResourceTools.getRealResource(path);
+        //输入的数据路径不能为null
+        if (paths != null) {
 
-            try {
-                super.addResource(realResource.getInputStream());
-            } catch (IOException e) {
-                LOGGER.error("can not read the inputPath " + path);
-                e.printStackTrace();
+            //遍历每一个输入数据的对象
+            for (String path : paths) {
+
+                //获取该资源数据
+                RealResource realResource = ResourceTools.getRealResource(path);
+
+                try {
+
+                    //添加资源
+                    super.addResource(realResource.getInputStream());
+
+                } catch (IOException e) {
+                    LOGGER.error("can not read the inputPath " + path);
+                    e.printStackTrace();
+                }
             }
         }
     }
