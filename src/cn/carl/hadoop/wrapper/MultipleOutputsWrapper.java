@@ -67,7 +67,7 @@ public class MultipleOutputsWrapper<K, V> extends MultipleOutputs<K, V> {
      */
     @Override
     public <K1, V1> void write(String namedOutput, K1 key, V1 value) throws IOException, InterruptedException {
-        this.write(namedOutput, key, value, workspacePath);
+        this.write(namedOutput, key, value, namedOutput);
     }
 
     @Override

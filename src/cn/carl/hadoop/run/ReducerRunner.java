@@ -186,6 +186,9 @@ public class ReducerRunner extends AbstractRunner {
                     invokeContextMethod(HadoopParam.SETUP_METHOD, instance);
                 }
 
+                //重新设置该类的多路径输出
+                this.checkOutputs(mrClass, mrInstance);
+
                 try {
                     method.invoke(instance, key, value, this.contextConfig.getContext());
                 } catch (ReflectiveOperationException e) {
@@ -208,7 +211,8 @@ public class ReducerRunner extends AbstractRunner {
      */
     private void invokeMethod(String methodName, Object instance) {
         try {
-            Method method = instance.getClass().getDeclaredMethod(methodName, Reducer.Context.class);
+            Method method = instance.getClass().getDeclaredMethod(methodName,
+                    Reducer.Context.class);
 
             //执行当前的指定名称方法
             if (null != method) {

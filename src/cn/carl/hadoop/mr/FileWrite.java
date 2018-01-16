@@ -122,7 +122,7 @@ public class FileWrite implements WriteStrategy {
     private void load() {
         try {
             channel = FileChannel.open(Paths.get(path), StandardOpenOption.CREATE,
-                    StandardOpenOption.WRITE);
+                    StandardOpenOption.WRITE, StandardOpenOption.APPEND);
         } catch (IOException e) {
             LOGGER.error("can not create file : " + path);
             throw new RuntimeException(e.getMessage());

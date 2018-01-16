@@ -75,6 +75,9 @@ public class MapperRunner extends AbstractRunner {
                     invokeContextMethod(HadoopParam.SETUP_METHOD, instance);
                 }
 
+                //获取该类实例中有没有对应的MultipleOutputs对象,作为多路径输出
+                this.checkOutputs(mrClass, mrInstance);
+
                 //执行核心的map方法
                 invokeMap(instance, currentPath);
 

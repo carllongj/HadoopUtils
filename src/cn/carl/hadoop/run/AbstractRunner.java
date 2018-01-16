@@ -3,11 +3,9 @@ package cn.carl.hadoop.run;
 import cn.carl.hadoop.HadoopParam;
 import cn.carl.hadoop.config.ContextConfig;
 import cn.carl.hadoop.config.HadoopType;
-import cn.carl.hadoop.wrapper.DefaultCounterWrapper;
 import cn.carl.hadoop.wrapper.MultipleOutputsWrapper;
 import cn.carl.other.Assert;
 import cn.carl.reflect.ReflectUtils;
-import org.apache.hadoop.yarn.webapp.hamlet.HamletSpec;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Field;
@@ -142,10 +140,6 @@ public abstract class AbstractRunner implements HadoopRunner {
             LOGGER.error("can not create instance of mrClass " + mrClass.getName());
             throw new RuntimeException(e.getMessage());
         }
-
-        //获取该类实例中有没有对应的MultipleOutputs对象,作为多路径输出
-        checkOutputs(mrClass, mrInstance);
-
     }
 
     /**
@@ -154,7 +148,7 @@ public abstract class AbstractRunner implements HadoopRunner {
      * @param clazz      对应的Class对象
      * @param mrInstance 当前的mr对象实例
      */
-    private void checkOutputs(Class<?> clazz, Object mrInstance) {
+    protected void checkOutputs(Class<?> clazz, Object mrInstance) {
 
         //获取所有的属性
         Field[] fields = clazz.getDeclaredFields();
