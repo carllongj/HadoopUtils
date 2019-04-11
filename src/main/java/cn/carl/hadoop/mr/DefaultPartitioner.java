@@ -1,6 +1,6 @@
 package cn.carl.hadoop.mr;
 
-import cn.carl.hadoop.MRConfig;
+import cn.carl.hadoop.config.MRConfig;
 import org.apache.hadoop.mapreduce.Partitioner;
 
 /**

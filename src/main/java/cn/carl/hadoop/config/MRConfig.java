@@ -1,4 +1,4 @@
-package cn.carl.hadoop;
+package cn.carl.hadoop.config;
 
 /**
  * <p>Title: cn.carl.hadoop MRConfig</p>
