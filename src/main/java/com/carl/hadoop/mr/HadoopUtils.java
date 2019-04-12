@@ -56,7 +56,7 @@ public class HadoopUtils {
         Objects.requireNonNull(clazz);
 
         //路径字符串不能为空
-        if (!StringUtils.isBlank(path)) {
+        if (StringUtils.isBlank(path)) {
             return;
         }
 
